@@ -1,4 +1,6 @@
-﻿Public Class FrmModEmp
+﻿Imports System.Text.RegularExpressions
+
+Public Class FrmModEmp
 
     Public idEmp As New Int32
     Dim empleado As New LMBADataSetTableAdapters.EmpleadoTableAdapter
@@ -62,6 +64,17 @@
     Private Function Validar() As Boolean
         If (String.IsNullOrEmpty(TxtCedula.Text)) Then
             MsgBox("No puede quedar vacío la cédula", MsgBoxStyle.Critical, "ERROR")
+            TxtCedula.Focus()
+            Return False
+        End If
+        Dim cedula As Regex = New Regex("\d{3}-\d{6}-\d{4}[A-Z]")
+        If (Not cedula.IsMatch(TxtCedula.Text)) Then
+            MsgBox("La cédula debe tener el formato 000-000000-0000A", MsgBoxStyle.Critical, "ERROR")
+            TxtCedula.Focus()
+            Return False
+        End If
+        If (empleado.GetData.Select($"numCedula='{TxtCedula.Text}' AND idEmpleado <> '{txtID.Text}'").Count > 0) Then
+            MsgBox("La cédula debe ser única", MsgBoxStyle.Critical, "ERROR")
             TxtCedula.Focus()
             Return False
         End If

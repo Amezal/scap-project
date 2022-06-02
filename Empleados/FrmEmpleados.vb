@@ -59,6 +59,8 @@
             emp.DeleteEmpleado(idEmp)
             MsgBox(empStr & " eliminado con éxito", MsgBoxStyle.Information, "Eliminar")
             Me.llenarGrid()
+            BtnEliminar.Enabled = False
+            BtnMod.Enabled = False
         End If
     End Sub
 End Class

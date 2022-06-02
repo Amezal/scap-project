@@ -1,9 +1,12 @@
-﻿Public Class FrmAddEmp
+﻿Imports System.Text.RegularExpressions
+
+Public Class FrmAddEmp
 
     Dim cargos As New LMBADataSetTableAdapters.CargoTableAdapter
     Dim dptos As New LMBADataSetTableAdapters.DepartamentoTableAdapter
     Dim horarios As New LMBADataSetTableAdapters.HorarioTableAdapter
     Dim empleados As New LMBADataSetTableAdapters.EmpleadoTableAdapter
+
     Public caller
 
     Private Sub FrmAddEmp_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -33,6 +36,17 @@
     Private Function Validar() As Boolean
         If (String.IsNullOrEmpty(TxtCedula.Text)) Then
             MsgBox("No puede quedar vacío la cédula", MsgBoxStyle.Critical, "ERROR")
+            TxtCedula.Focus()
+            Return False
+        End If
+        Dim cedula As Regex = New Regex("\d{3}-\d{6}-\d{4}[A-Z]")
+        If (Not cedula.IsMatch(TxtCedula.Text)) Then
+            MsgBox("La cédula debe tener el formato 000-000000-0000A", MsgBoxStyle.Critical, "ERROR")
+            TxtCedula.Focus()
+            Return False
+        End If
+        If (empleados.GetData.Select($"numCedula='{TxtCedula.Text}'").Count > 0) Then
+            MsgBox("La cédula debe ser única", MsgBoxStyle.Critical, "ERROR")
             TxtCedula.Focus()
             Return False
         End If
